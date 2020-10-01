@@ -32,12 +32,22 @@ class Cover extends AbstractSizer
         ];
     }
 
+    public function height(): int
+    {
+        return $this->height;
+    }
+
     public function width(): int
+    {
+        return $this->width;
+    }
+
+    public function resizeToWidth(): ?int
     {
         return $this->calculateSize()['width'];
     }
 
-    public function height(): int
+    public function resizeToHeight(): ?int
     {
         return $this->calculateSize()['height'];
     }

@@ -1,5 +1,9 @@
 # image-transform
 
+[![Build Status](https://travis-ci.org/jobyone/image-transform.svg?branch=main)](https://travis-ci.org/jobyone/image-transform)
+[![Coverage Status](https://coveralls.io/repos/github/jobyone/image-transform/badge.svg?branch=main)](https://coveralls.io/github/jobyone/image-transform?branch=main)
+
+
 A tightly-focused library for performing a very limited set of simple image transformations. This library's purpose is to eschew the standard kitchen sink approach to PHP image libraries in favor of high performance, wide driver support, and a dead simple API.
 
 ## Roadmap

@@ -2,30 +2,104 @@
 /* image-transform | https://github.com/jobyone/image-transform | MIT License */
 namespace ByJoby\ImageTransform;
 
+use ByJoby\ImageTransform\Sizers\AbstractSizer;
+
 class Image
 {
-    protected $src, $driver;
-    protected $transforms = [];
+    protected $source, $driver;
+    protected $originalWidth, $originalHeight;
+    protected $rotation = 0;
+    protected $flipH = false;
+    protected $flipV = false;
+    protected $sizer = null;
 
-    public function __construct(string $src, DriverInterface $driver)
+    public function __construct(string $source, DriverInterface $driver, AbstractSizer $sizer)
     {
-        $this->src = $src;
+        $this->source($source);
+        $this->sizer($sizer);
         $this->driver = clone $driver;
-        $this->driver->source($src);
     }
 
-    public function transform(TransformInterface $transform)
+    public function source(string $source)
     {
-        $this->transforms[] = $transform;
+        // set source
+        $this->source = realpath($source);
+        if (!$this->source) {
+            throw new \Exception("Source image not found: " . htmlentities($source));
+        }
+        // validate file
+        if (!is_file($this->source)) {
+            throw new \Exception("Image file doesn't exist: " . htmlentities($this->source));
+        }
+        if (!exif_imagetype($this->source)) {
+            throw new \Exception("Invalid image file: " . htmlentities($this->source));
+        }
+        // get height/width
+        list($this->originalWidth, $this->originalHeight) = getimagesize($this->source);
+    }
+
+    public function sizer(AbstractSizer $sizer = null): AbstractSizer
+    {
+        if ($sizer) {
+            $this->sizer = clone $sizer;
+            $this->sizer->image($this);
+        }
+        return $this->sizer;
+    }
+
+    public function rotate(int $steps = 1)
+    {
+        $this->rotation = ($this->rotation + $steps) % 4;
+    }
+
+    public function rotation(): int
+    {
+        return $this->rotation;
+    }
+
+    public function flipH()
+    {
+        $this->flipH = !$this->flipH;
+        if ($this->flipH && $this->flipV) {
+            $this->flipH = $this->flipV = false;
+        }
+    }
+
+    public function flipV()
+    {
+        $this->flipV = !$this->flipV;
+        if ($this->flipH && $this->flipV) {
+            $this->flipH = $this->flipV = false;
+        }
+    }
+
+    public function width(): int
+    {
+        return $this->sizer->width();
+    }
+
+    public function height(): int
+    {
+        return $this->sizer->height();
+    }
+
+    public function ratio(): float
+    {
+        return $this->width() / $this->height();
+    }
+
+    public function originalRatio(): float
+    {
+        return $this->originalWidth() / $this->originalHeight();
     }
 
     public function originalWidth(): int
     {
-        return $this->driver->originalWidth();
+        return $this->originalWidth;
     }
 
     public function originalHeight(): int
     {
-        return $this->driver->originalHeight();
+        return $this->originalHeight;
     }
 }

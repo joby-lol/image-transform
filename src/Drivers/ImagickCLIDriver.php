@@ -9,5 +9,5 @@ namespace ByJoby\ImageTransform\Drivers;
  * require that you have CLI Imagick installed, and that your server allows
  * PHP's exec() function to use it.
  */
-class ImagickCLIDriver extends AbstractDriver
+class ImagickCLIDriver extends AbstractCLIDriver
 {}

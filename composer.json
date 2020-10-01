@@ -21,5 +21,14 @@
     "require": {
         "php": ">=7.1",
         "ext-gd": "*"
+    },
+    "require-dev": {
+        "atoum/atoum": "^3.4",
+        "atoum/stubs": "^2.6"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ByJoby\\ImageTransform\\tests\\": "tests/"
+        }
     }
 }

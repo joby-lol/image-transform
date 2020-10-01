@@ -4,18 +4,18 @@ namespace ByJoby\ImageTransform\Drivers;
 
 abstract class AbstractCLIDriver extends AbstractDriver
 {
-    protected $executablePath = '';
+    protected $executablePath;
 
-    public function __construct()
+    public function __construct(string $executablePath = null)
     {
         if (!function_exists('exec')) {
             throw new \Exception("CLI drivers can't be used with the current configuration because exec is disabled");
         }
-        parent::__construct();
+        $this->executablePath = $executablePath;
     }
 
-    public function executablePath($name)
+    public function executablePath()
     {
-        return $this->executablePath.$name;
+        return $this->executablePath ?? static::DEFAULT_EXECUTABLE;
     }
 }

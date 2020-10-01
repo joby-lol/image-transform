@@ -15,12 +15,17 @@ class Image
 
     public function __construct(string $source, DriverInterface $driver, AbstractSizer $sizer)
     {
-        $this->source($source);
-        $this->sizer($sizer);
+        $this->setSource($source);
+        $this->setSizer($sizer);
         $this->driver = clone $driver;
     }
 
-    public function source(string $source)
+    public function source(): string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source)
     {
         // set source
         $this->source = realpath($source);
@@ -38,13 +43,15 @@ class Image
         list($this->originalWidth, $this->originalHeight) = getimagesize($this->source);
     }
 
-    public function sizer(AbstractSizer $sizer = null): AbstractSizer
+    public function sizer(): AbstractSizer
     {
-        if ($sizer) {
-            $this->sizer = clone $sizer;
-            $this->sizer->image($this);
-        }
         return $this->sizer;
+    }
+
+    public function setSizer(AbstractSizer $sizer)
+    {
+        $this->sizer = clone $sizer;
+        $this->sizer->image($this);
     }
 
     public function rotate(int $steps = 1)
@@ -60,17 +67,21 @@ class Image
     public function flipH()
     {
         $this->flipH = !$this->flipH;
-        if ($this->flipH && $this->flipV) {
-            $this->flipH = $this->flipV = false;
-        }
     }
 
     public function flipV()
     {
         $this->flipV = !$this->flipV;
-        if ($this->flipH && $this->flipV) {
-            $this->flipH = $this->flipV = false;
-        }
+    }
+
+    public function getFlipH()
+    {
+        return $this->flipH;
+    }
+
+    public function getFlipV()
+    {
+        return $this->flipV;
     }
 
     public function width(): int
@@ -101,5 +112,10 @@ class Image
     public function originalHeight(): int
     {
         return $this->originalHeight;
+    }
+
+    public function save(string $file)
+    {
+        $this->driver->save($this, $file);
     }
 }

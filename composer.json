@@ -1,0 +1,25 @@
+{
+    "name": "jobyone/image-transform",
+    "description": "A tightly-focused library for performing a very limited set of simple image transformations. This library's purpose is to eschew the standard kitchen sink approach to PHP image libraries in favor of high performance, wide driver support, and a dead simple API.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joby Elliott",
+            "email": "joby@byjoby.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ByJoby\\ImageTransform\\": "src/"
+        }
+    },
+    "suggest": {
+        "ext-imagick": "to use the Imagick implementation",
+        "ext-gmagick": "to use the Gmagick implementation"
+    },
+    "require": {
+        "php": ">=7.1",
+        "ext-gd": "*"
+    }
+}

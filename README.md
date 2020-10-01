@@ -17,7 +17,7 @@ A 1.0 release will not be made until the following drivers are available and sol
 
 ### Transforms
 
-A 1.0 release will be made available once the following transforms are available and solidly tested across all drivers:
+A 1.0 release will be made available once the following transforms are available and solidly tested across all drivers. These are basically what I see as the bare minimum for such a library to be useful.
 
 * rotate (in 90 degree increments)
 * mirror-h
@@ -25,8 +25,8 @@ A 1.0 release will be made available once the following transforms are available
 * max-width
 * max-height
 * fit (basically an alias for max-width and max-height)
-* cover
-* crop
+* cover (scale to cover a box, then crop excess)
+* crop (crop toward the center to a given size)
 * cover-crop (convenience transform, combining cover and crop, useful for thumbnails)
 
 The following transforms are also on my mind as possibilities, but may or may not make it into 1.0:
@@ -34,3 +34,7 @@ The following transforms are also on my mind as possibilities, but may or may no
 * grayscale
 * colorize (needs to function consistently though)
 * overlay (i.e. for watermarking)
+* blur
+* hue
+* saturation
+* brightness

@@ -7,5 +7,5 @@ use ByJoby\ImageTransform\Sizers\AbstractSizer;
 interface DriverInterface
 {
     public function image(string $src, AbstractSizer $sizer): Image;
-    public function save(Image $image, string $filename);
+    public function save(Image $image, ?string $filename = null): ?string;
 }

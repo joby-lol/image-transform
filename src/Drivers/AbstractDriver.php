@@ -69,18 +69,25 @@ abstract class AbstractDriver implements DriverInterface
         }
     }
 
-    public function save(Image $image, string $filename)
+    public function save(Image $image, ?string $filename = null): ?string
     {
-        if (is_file($filename)) {
-            if (!is_writeable($filename)) {
-                throw new \Exception("Can't save image because file already exists and is not writeable: " . htmlentities($filename));
+        if ($filename) {
+            if (is_file($filename)) {
+                if (!is_writeable($filename)) {
+                    throw new \Exception("Can't save image because file already exists and is not writeable: " . htmlentities($filename));
+                }
+            } else {
+                if (!$this->mkdir(dirname($filename))) {
+                    throw new \Exception("Can't save image because parent directory isn't writeable or couldn't be created: " . htmlentities($filename));
+                }
+                touch($filename);
             }
+            $this->doSave($image, realpath($filename));
+            return null;
         } else {
-            if (!$this->mkdir(dirname($filename))) {
-                throw new \Exception("Can't save image because parent directory isn't writeable or couldn't be created: " . htmlentities($filename));
-            }
-            touch($filename);
+            $filename = $this->tempDir() . '/save.jpg';
+            $this->doSave($image, $filename);
+            return file_get_contents($filename);
         }
-        $this->doSave($image, realpath($filename));
     }
 }

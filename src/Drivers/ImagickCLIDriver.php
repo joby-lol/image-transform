@@ -13,14 +13,18 @@ use ByJoby\ImageTransform\Image;
  */
 class ImagickCLIDriver extends AbstractCLIDriver
 {
-    const DEFAULT_EXECUTABLE = 'magick';
+    const MOGRIFY_EXECUTABLE = 'magick mogrify';
+
+    protected function mogrifyExecutable(): string
+    {
+        return static::MOGRIFY_EXECUTABLE;
+    }
 
     protected function doSave(Image $image, string $filename)
     {
         // basics of command
         $command = [
-            $this->executablePath(),
-            '"' . $image->source() . '"',
+            $this->mogrifyExecutable(),
         ];
         // rotation
         if ($image->rotation()) {
@@ -36,15 +40,18 @@ class ImagickCLIDriver extends AbstractCLIDriver
         // resizing/cropping
         $sizer = $image->sizer();
         if ($sizer->resizeToWidth() || $sizer->cropToWidth()) {
-            $command[] = '-resize '.$sizer->resizeToWidth().'x'.$sizer->resizeToHeight();
+            $command[] = '-resize ' . $sizer->resizeToWidth() . 'x' . $sizer->resizeToHeight();
         }
         if ($sizer->cropToWidth() && $sizer->cropToHeight()) {
             $command[] = '-gravity center';
-            $command[] = '-extent '.$sizer->cropToWidth().'x'.$sizer->cropToHeight();
+            $command[] = '-extent ' . $sizer->cropToWidth() . 'x' . $sizer->cropToHeight();
         }
-        // output file
-        $command[] = '"' . $filename . '"';
-        var_dump($command);
+        // create temp file
+        $tempFile = $this->tempDir() . '/' . uniqid() . '.' . basename($filename);
+        copy($image->source(), $tempFile);
+        // execute command and copy result
+        $command[] = '"' . $tempFile . '"';
         exec(implode(' ', $command));
+        copy($tempFile, $filename);
     }
 }

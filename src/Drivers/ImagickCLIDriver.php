@@ -13,11 +13,17 @@ use ByJoby\ImageTransform\Image;
  */
 class ImagickCLIDriver extends AbstractCLIDriver
 {
-    const MOGRIFY_EXECUTABLE = 'magick mogrify';
+    protected $mogrify_executable;
+
+    public function __construct($mogrify_executable = 'magick mogrify')
+    {
+        parent::__construct();
+        $this->mogrify_executable = $mogrify_executable;
+    }
 
     protected function mogrifyExecutable(): string
     {
-        return static::MOGRIFY_EXECUTABLE;
+        return $this->mogrify_executable;
     }
 
     protected function doSave(Image $image, string $filename)
@@ -51,7 +57,10 @@ class ImagickCLIDriver extends AbstractCLIDriver
         copy($image->source(), $tempFile);
         // execute command and copy result
         $command[] = '"' . $tempFile . '"';
-        exec(implode(' ', $command));
+        exec(implode(' ', $command), $output, $return);
+        if ($return) {
+            throw new \Exception("Imagick CLI call failed, returned " . $return);
+        }
         copy($tempFile, $filename);
     }
 }

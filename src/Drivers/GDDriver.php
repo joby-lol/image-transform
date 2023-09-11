@@ -5,8 +5,9 @@ namespace ByJoby\ImageTransform\Drivers;
 use ByJoby\ImageTransform\Image;
 
 /**
- * This driver uses PHP's built-in GD libary. This is by far the slowest
- * driver, but support is basically universal.
+ * This driver uses PHP's built-in GD libary. This is by far the slowest driver,
+ * and its memory use is absolutely atrocious for large images, but support is
+ * basically universal.
  */
 class GDDriver extends AbstractExtensionDriver
 {

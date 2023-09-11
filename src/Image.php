@@ -3,21 +3,23 @@
 namespace ByJoby\ImageTransform;
 
 use ByJoby\ImageTransform\Sizers\AbstractSizer;
+use ByJoby\ImageTransform\Sizers\Original;
 
 class Image
 {
-    protected $source, $driver;
-    protected $originalWidth, $originalHeight;
+    protected $source;
+    protected $driver;
+    protected $originalWidth;
+    protected $originalHeight;
     protected $rotation = 0;
     protected $flipH = false;
     protected $flipV = false;
     protected $sizer = null;
 
-    public function __construct(string $source, DriverInterface $driver, AbstractSizer $sizer)
+    public function __construct(string $source, AbstractSizer|null $sizer = null)
     {
         $this->setSource($source);
-        $this->setSizer($sizer);
-        $this->driver = clone $driver;
+        $this->setSizer($sizer ?? new Original());
     }
 
     public function source(): string
@@ -25,7 +27,7 @@ class Image
         return $this->source;
     }
 
-    public function setSource(string $source)
+    public function setSource(string $source): static
     {
         // set source
         $this->source = realpath($source);
@@ -41,6 +43,8 @@ class Image
         }
         // get height/width
         list($this->originalWidth, $this->originalHeight) = getimagesize($this->source);
+        // return self
+        return $this;
     }
 
     public function sizer(): AbstractSizer
@@ -48,15 +52,17 @@ class Image
         return $this->sizer;
     }
 
-    public function setSizer(AbstractSizer $sizer)
+    public function setSizer(AbstractSizer $sizer): static
     {
         $this->sizer = clone $sizer;
         $this->sizer->image($this);
+        return $this;
     }
 
-    public function rotate(int $steps = 1)
+    public function rotate(int $steps = 1): static
     {
         $this->rotation = ($this->rotation + $steps) % 4;
+        return $this;
     }
 
     public function rotation(): int
@@ -64,22 +70,24 @@ class Image
         return $this->rotation;
     }
 
-    public function flipH()
+    public function flipH(): static
     {
         $this->flipH = !$this->flipH;
+        return $this;
     }
 
-    public function flipV()
+    public function flipV(): static
     {
         $this->flipV = !$this->flipV;
+        return $this;
     }
 
-    public function getFlipH()
+    public function getFlipH(): bool
     {
         return $this->flipH;
     }
 
-    public function getFlipV()
+    public function getFlipV(): bool
     {
         return $this->flipV;
     }
@@ -114,8 +122,14 @@ class Image
         return $this->originalHeight;
     }
 
-    public function save(string $file)
+    public function driver(): DriverInterface
     {
-        $this->driver->save($this, $file);
+        return $this->driver ?? DefaultDriver::get();
+    }
+
+    public function save(string $file): static
+    {
+        $this->driver()->save($this, $file);
+        return $this;
     }
 }

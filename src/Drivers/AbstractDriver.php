@@ -9,19 +9,10 @@ use ByJoby\ImageTransform\Sizers\AbstractSizer;
 abstract class AbstractDriver implements DriverInterface
 {
     protected $tempDir = null;
-    protected $chmod = 0775;
+    protected $chmod_dir = 0775;
+    protected $chmod_file = 0665;
 
     abstract protected function doSave(Image $image, string $filename);
-
-    public function __clone()
-    {
-        $this->tempDir = null;
-    }
-
-    public function image(string $src, AbstractSizer $sizer): Image
-    {
-        return new Image($src, $this, $sizer);
-    }
 
     public function tempDir(): string
     {
@@ -31,12 +22,13 @@ abstract class AbstractDriver implements DriverInterface
         return $this->tempDir;
     }
 
-    protected function setTempDir(string $dir)
+    public function setTempDir(string $dir): static
     {
         if (!$this->mkdir($dir)) {
             throw new \Exception("Temp directory " . htmlentities($dir) . " doesn't exist or isn't writeable, and couldn't be created.");
         }
         $this->tempDir = $dir;
+        return $this;
     }
 
     protected function mkdir(string $dir)
@@ -52,7 +44,7 @@ abstract class AbstractDriver implements DriverInterface
         if (is_dir($parent)) {
             // check parent permissions
             if (!is_writeable($parent)) {
-                chmod($parent, $this->chmod);
+                chmod($parent, $this->chmod_dir);
             }
             if (!is_writeable($parent)) {
                 return false;
@@ -61,7 +53,7 @@ abstract class AbstractDriver implements DriverInterface
             if (!mkdir($dir)) {
                 return false;
             }
-            chmod($dir, $this->chmod);
+            chmod($dir, $this->chmod_dir);
             return is_writeable($dir);
         } else {
             // parent doesn't exist, so recursive call failed
@@ -83,11 +75,14 @@ abstract class AbstractDriver implements DriverInterface
                 touch($filename);
             }
             $this->doSave($image, realpath($filename));
+            chmod($filename, $this->chmod_file);
             return null;
         } else {
-            $filename = $this->tempDir() . '/save.jpg';
+            $filename = $this->tempDir() . '/' . uniqid() . '.jpg';
             $this->doSave($image, $filename);
-            return file_get_contents($filename);
+            $output = file_get_contents($filename);
+            unlink($filename);
+            return $output;
         }
     }
 }

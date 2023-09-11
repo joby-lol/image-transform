@@ -2,7 +2,7 @@
 /* image-transform | https://github.com/jobyone/image-transform | MIT License */
 namespace ByJoby\ImageTransform\Drivers;
 
-abstract class AbstractCLIDriver extends AbstractDriver
+abstract class AbstractCliDriver extends AbstractDriver
 {
     public function __construct()
     {

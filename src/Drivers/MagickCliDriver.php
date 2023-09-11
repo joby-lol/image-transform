@@ -5,13 +5,13 @@ namespace ByJoby\ImageTransform\Drivers;
 use ByJoby\ImageTransform\Image;
 
 /**
- * This driver uses exec() and command-line ImageMagick utilities to
- * transform images. It is likely approaching the limits of how fast this
- * library can possibly be. The downside is that it will only run if
- * you have exec() enabled, and your server allows it to execute the
- * ImageMagick binaries.
+ * This driver uses exec() and command-line ImageMagick (or Gmagick) utilities
+ * to transform images. It is likely approaching the limits of how fast this
+ * library can possibly be. The downside is that it will only run if you have
+ * exec() enabled, and your server allows it to execute the ImageMagick/Gmagick
+ * binaries and use them to read and write image files.
  */
-class ImagickCLIDriver extends AbstractCLIDriver
+class MagickCliDriver extends AbstractCliDriver
 {
     protected $mogrify_executable;
 

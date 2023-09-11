@@ -1,9 +1,6 @@
 # image-transform
 
-[![Build Status](https://travis-ci.org/jobyone/image-transform.svg?branch=main)](https://travis-ci.org/jobyone/image-transform)
-[![Coverage Status](https://coveralls.io/repos/github/jobyone/image-transform/badge.svg?branch=main)](https://coveralls.io/github/jobyone/image-transform?branch=main)
-
-A tightly-focused library for performing a very limited set of simple image transformations. This library's purpose is to eschew the standard kitchen sink approach to PHP image libraries in favor of high performance, wide driver support, and a dead simple API.
+A tightly-focused library for performing a very limited set of simple image transformations. This library's purpose is to eschew the standard kitchen sink approach to PHP image libraries in favor of high performance, wider driver support, and a dead simple API.
 
 ## Current state
 
@@ -11,12 +8,12 @@ This library is under active development, and until a 1.0 release is made you sh
 
 ### Current progress
 
-| Driver     | Rotate | Mirror | Resize | Crop | Overlay | Grayscale | Colorize |
-| :--------- | :----: | :----: | :----: | :--: | :-----: | :-------: | :------: |
-| GD         | X      | X      | X      | X    |         |           |          |
-| Imagick    |        |        |        |      |         |           |          |
-| Gmagick    |        |        |        |      |         |           |          |
-| ImagickCLI | X      | X      | X      | X    |         |           |          |
+| Driver     | Rotate | Mirror | Resize | Crop |
+| :--------- | :----: | :----: | :----: | :--: |
+| GD         | X      | X      | X      | X    |
+| Imagick    |        |        |        |      |
+| Gmagick    |        |        |        |      |
+| ImagickCLI | X      | X      | X      | X    |
 
 ## Roadmap
 
@@ -57,7 +54,7 @@ More complex, and also lesser used effects/stages that may or may not make it in
 
 #### Order of operations
 
-In the name of simplicity and ease of use, the effective order of operations will always be as reflected above:
+In the name of simplicity, ease of use, and performance, the effective order of operations will always and only be:
 
 1. Orientation
 2. Resizing and cropping

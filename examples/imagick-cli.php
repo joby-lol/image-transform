@@ -1,12 +1,12 @@
 <?php
 
-use ByJoby\ImageTransform\Drivers\ImagickCLIDriver;
+use ByJoby\ImageTransform\Drivers\MagickCliDriver;
 use ByJoby\ImageTransform\Sizers\Cover;
 
 include __DIR__ . '/../vendor/autoload.php';
 
 // first step is instantiate a Driver, in this case ImagickCLI
-$driver = new ImagickCLIDriver();
+$driver = new MagickCliDriver();
 
 // instantiate an Image object using a source file and Sizer
 // in this example we're covering a 200x500 box

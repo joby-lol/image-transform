@@ -15,16 +15,16 @@
         }
     },
     "suggest": {
-        "ext-imagick": "to use the Imagick implementation",
+        "ext-imagick": "to use the ImageMagick implementation",
         "ext-gmagick": "to use the Gmagick implementation"
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.1",
         "ext-gd": "*"
     },
     "require-dev": {
-        "atoum/atoum": "^3.4",
-        "atoum/stubs": "^2.6"
+        "ext-gmagick": "*",
+        "ext-gd": "*"
     },
     "autoload-dev": {
         "psr-4": {

@@ -6,6 +6,7 @@ use ByJoby\ImageTransform\Image;
 
 abstract class AbstractSizer
 {
+    /** @var Image */
     protected $image;
 
     abstract public function width(): int;
@@ -46,8 +47,9 @@ abstract class AbstractSizer
         return $this->originalWidth()/$this->originalHeight();
     }
 
-    public function image(Image $image)
+    public function setImage(Image $image): static
     {
         $this->image = $image;
+        return $this;
     }
 }

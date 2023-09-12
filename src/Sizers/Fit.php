@@ -4,6 +4,7 @@ namespace ByJoby\ImageTransform\Sizers;
 
 class Fit extends AbstractSizer
 {
+    /** @var int */
     protected $width, $height;
 
     public function __construct(int $width, int $height)
@@ -27,14 +28,17 @@ class Fit extends AbstractSizer
         return $this->width / $this->height;
     }
 
+    /**
+     * @return array{height:int,width:int}
+     */
     protected function calculateSize(): array
     {
         if ($this->targetRatio() > $this->originalRatio()) {
             $height = $this->height;
-            $width = round($height * $this->originalRatio());
+            $width = intval(round($height * $this->originalRatio()));
         } else {
             $width = $this->width;
-            $height = round($width / $this->originalRatio());
+            $height = intval(round($width / $this->originalRatio()));
         }
         return [
             'height' => $height,

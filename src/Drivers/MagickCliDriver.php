@@ -13,12 +13,8 @@ use ByJoby\ImageTransform\Image;
  */
 class MagickCliDriver extends AbstractCliDriver
 {
-    protected $mogrify_executable;
-
-    public function __construct($mogrify_executable = 'magick mogrify')
+    public function __construct(protected string $mogrify_executable = 'magick mogrify')
     {
-        parent::__construct();
-        $this->mogrify_executable = $mogrify_executable;
     }
 
     protected function mogrifyExecutable(): string
@@ -26,7 +22,7 @@ class MagickCliDriver extends AbstractCliDriver
         return $this->mogrify_executable;
     }
 
-    protected function doSave(Image $image, string $filename)
+    protected function doSave(Image $image, string $filename): void
     {
         // basics of command
         $command = [

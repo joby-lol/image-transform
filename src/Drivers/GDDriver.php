@@ -3,6 +3,7 @@
 namespace ByJoby\ImageTransform\Drivers;
 
 use ByJoby\ImageTransform\Image;
+use GdImage;
 
 /**
  * This driver uses PHP's built-in GD libary. This is by far the slowest driver,
@@ -18,42 +19,62 @@ class GDDriver extends AbstractExtensionDriver
         }
     }
 
-    protected function getImageObject(Image $image)
+    protected function getImageObject(Image $image): GdImage
     {
         $source = $image->source();
-        $extension = strtolower(preg_replace('/^.+\./', '', $source));
+        /** @var string */
+        $extension = preg_replace('/^.+\./', '', $source);
+        $extension = strtolower($extension);
         switch ($extension) {
             case 'bmp':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefrombmp($source);
             case 'gif':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromgif($source);
             case 'jpg':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromjpeg($source);
             case 'jpeg':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromjpeg($source);
             case 'png':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefrompng($source);
             case 'wbmp':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromwbmp($source);
             case 'webp':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromwebp($source);
             case 'xbm':
+                // @phpstan-ignore-next-line this will throw an exception, which is good
                 return imagecreatefromxbm($source);
             default:
                 throw new \Exception("Unsupported input type: " . htmlentities($source));
         }
     }
 
-    protected function doResize($object, Image $image)
+    /**
+     * @param GdImage $object
+     * @param Image $image
+     * @return GdImage
+     */
+    protected function doResize($object, Image $image): GdImage
     {
         $sizer = $image->sizer();
         if ($sizer->resizeToHeight() && $sizer->resizeToWidth()) {
             // sizer is calling for a resize
+            /** @var GdImage */
             $new = imagecreatetruecolor($sizer->resizeToWidth(), $sizer->resizeToHeight());
             imagecopyresampled(
-                $new, $object,
-                0, 0,//dst x/y
-                0, 0,
+                $new,
+                $object,
+                0,
+                0,
+                //dst x/y
+                0,
+                0,
                 $sizer->resizeToWidth(), $sizer->resizeToHeight(),
                 $sizer->originalWidth(), $sizer->originalHeight()
             );
@@ -64,17 +85,26 @@ class GDDriver extends AbstractExtensionDriver
         }
     }
 
-    protected function doCrop($object, Image $image)
+    /**
+     * @param GdImage $object
+     * @param Image $image
+     * @return GdImage
+     */
+    protected function doCrop($object, Image $image): GdImage
     {
         $sizer = $image->sizer();
         if ($sizer->cropToHeight() && $sizer->cropToWidth()) {
             // sizer is calling for a crop
+            /** @var GdImage */
             $new = imagecreatetruecolor($sizer->cropToWidth(), $sizer->cropToHeight());
             imagecopyresampled(
-                $new, $object,
-                ($sizer->cropToWidth()-$sizer->resizeToWidth())/2,($sizer->cropToHeight()-$sizer->resizeToHeight())/2,
-                0,0,
-                $sizer->resizetoWidth(),$sizer->resizeToHeight(),$sizer->resizeToWidth(),$sizer->resizeToHeight()
+                $new,
+                $object,
+                ($sizer->cropToWidth() - $sizer->resizeToWidth()) / 2, ($sizer->cropToHeight() - $sizer->resizeToHeight()) / 2,
+                0,
+                0,
+                // @phpstan-ignore-next-line these are definitely set
+                $sizer->resizetoWidth(), $sizer->resizeToHeight(), $sizer->resizeToWidth(), $sizer->resizeToHeight()
             );
             return $new;
         } else {
@@ -83,45 +113,63 @@ class GDDriver extends AbstractExtensionDriver
         }
     }
 
-    protected function doFlip($object, Image $image)
+    /**
+     * @param GdImage $object
+     * @param Image $image
+     * @return GdImage
+     */
+    protected function doFlip($object, Image $image): GdImage
     {
         if ($image->getFlipH()) {
-            imageflip($object,IMG_FLIP_HORIZONTAL);
+            imageflip($object, IMG_FLIP_HORIZONTAL);
         }
         if ($image->getFlipV()) {
-            imageflip($object,IMG_FLIP_VERTICAL);
+            imageflip($object, IMG_FLIP_VERTICAL);
         }
         return $object;
     }
 
-    protected function doRotation($object, Image $image)
+    /**
+     * @param GdImage $object
+     * @param Image $image
+     * @return GdImage
+     */
+    protected function doRotation($object, Image $image): GdImage
     {
         if ($rotationAmount = 360 - $image->rotation() * 90) {
+            // @phpstan-ignore-next-line
             return imagerotate($object, $rotationAmount, 0);
         }
         return $object;
     }
 
-    protected function saveImageObject($object, string $filename)
+    /**
+     * @param GdImage $object
+     * @param string $filename
+     * @return void
+     */
+    protected function saveImageObject($object, string $filename): void
     {
-        $extension = strtolower(preg_replace('/^.+\./', '', $filename));
+        /** @var string */
+        $extension = preg_replace('/^.+\./', '', $filename);
+        $extension = strtolower($extension);
         switch ($extension) {
             case 'bmp':
-                return imagebmp($object, $filename);
+                imagebmp($object, $filename);
             case 'gif':
-                return imagegif($object, $filename);
+                imagegif($object, $filename);
             case 'jpg':
-                return imagejpeg($object, $filename);
+                imagejpeg($object, $filename);
             case 'jpeg':
-                return imagejpeg($object, $filename);
+                imagejpeg($object, $filename);
             case 'png':
-                return imagepng($object, $filename);
+                imagepng($object, $filename);
             case 'wbmp':
-                return imagewbmp($object, $filename);
+                imagewbmp($object, $filename);
             case 'webp':
-                return imagewebp($object, $filename);
+                imagewebp($object, $filename);
             case 'xbm':
-                return imagexbm($object, $filename);
+                imagexbm($object, $filename);
             default:
                 throw new \Exception("Unsupported output type: " . htmlentities($filename));
         }

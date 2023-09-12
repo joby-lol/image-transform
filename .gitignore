@@ -4,3 +4,4 @@ composer.lock
 debug.log
 /examples/out/*
 !.gitkeep
+.phpunit.result.cache

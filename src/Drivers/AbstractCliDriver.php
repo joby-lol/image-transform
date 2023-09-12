@@ -4,10 +4,4 @@ namespace ByJoby\ImageTransform\Drivers;
 
 abstract class AbstractCliDriver extends AbstractDriver
 {
-    public function __construct()
-    {
-        if (!function_exists('exec')) {
-            throw new \Exception("CLI drivers can't be used with the current configuration because exec is disabled");
-        }
-    }
 }

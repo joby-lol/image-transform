@@ -8,12 +8,11 @@ This library is under active development, and until a 1.0 release is made you sh
 
 ### Current progress
 
-| Driver     | Rotate | Mirror | Resize | Crop |
-| :--------- | :----: | :----: | :----: | :--: |
-| GD         | X      | X      | X      | X    |
-| Imagick    |        |        |        |      |
-| Gmagick    |        |        |        |      |
-| ImagickCLI | X      | X      | X      | X    |
+| Driver          | Rotate | Mirror | Resize | Crop  |
+| :-------------- | :----: | :----: | :----: | :---: |
+| GDDriver        | X      | X      | X      | X     |
+| MagickDriver    |        |        |        |       |
+| MagickCliDriver | X      | X      | X      | X     |
 
 ## Roadmap
 
@@ -22,9 +21,8 @@ This library is under active development, and until a 1.0 release is made you sh
 A 1.0 release will not be made until the following drivers are available and solidly tested:
 
 * GD
-* Imagick
-* Gmagick
-* GmagickCLI
+* Magick (unified driver that will use either ImageMagick or Gmagick automatically depending on what is available)
+* MagickCliDriver (unified driver that can be configured to use either ImageMagick or Gmagick CLI tools)
 
 ### Transforms
 

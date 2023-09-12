@@ -6,14 +6,20 @@ use ByJoby\ImageTransform\Image;
 
 abstract class AbstractExtensionDriver extends AbstractDriver
 {
+    // @phpstan-ignore-next-line we specify types in subclasses
     abstract protected function getImageObject(Image $image);
+    // @phpstan-ignore-next-line we specify types in subclasses
     abstract protected function doResize($object, Image $image);
+    // @phpstan-ignore-next-line we specify types in subclasses
     abstract protected function doCrop($object, Image $image);
+    // @phpstan-ignore-next-line we specify types in subclasses
     abstract protected function doFlip($object, Image $image);
+    // @phpstan-ignore-next-line we specify types in subclasses
     abstract protected function doRotation($object, Image $image);
-    abstract protected function saveImageObject($object, string $filename);
+    // @phpstan-ignore-next-line we specify types in subclasses
+    abstract protected function saveImageObject($object, string $filename): void;
 
-    public function doSave(Image $image, string $filename)
+    public function doSave(Image $image, string $filename): void
     {
         $object = $this->getImageObject($image);
         $object = $this->doRotation($object, $image);

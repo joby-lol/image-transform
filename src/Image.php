@@ -7,13 +7,21 @@ use ByJoby\ImageTransform\Sizers\Original;
 
 class Image
 {
+    /** @var string */
     protected $source;
+    /** @var DriverInterface|null */
     protected $driver;
+    /** @var int */
     protected $originalWidth;
+    /** @var int */
     protected $originalHeight;
+    /** @var int */
     protected $rotation = 0;
+    /** @var boolean */
     protected $flipH = false;
+    /** @var boolean */
     protected $flipV = false;
+    /** @var AbstractSizer */
     protected $sizer = null;
 
     public function __construct(string $source, AbstractSizer|null $sizer = null)
@@ -30,10 +38,11 @@ class Image
     public function setSource(string $source): static
     {
         // set source
-        $this->source = realpath($source);
-        if (!$this->source) {
-            throw new \Exception("Source image not found: " . htmlentities($source));
+        $source = realpath($source);
+        if (!$source) {
+            throw new \Exception("Source image not found");
         }
+        $this->source = $source;
         // validate file
         if (!is_file($this->source)) {
             throw new \Exception("Image file doesn't exist: " . htmlentities($this->source));
@@ -42,7 +51,11 @@ class Image
             throw new \Exception("Invalid image file: " . htmlentities($this->source));
         }
         // get height/width
-        list($this->originalWidth, $this->originalHeight) = getimagesize($this->source);
+        $size = getimagesize($this->source);
+        if (!$size) {
+            throw new \Exception("Couldn't get image size: " . htmlentities($this->source));
+        }
+        list($this->originalWidth, $this->originalHeight) = $size;
         // return self
         return $this;
     }
@@ -55,7 +68,7 @@ class Image
     public function setSizer(AbstractSizer $sizer): static
     {
         $this->sizer = clone $sizer;
-        $this->sizer->image($this);
+        $this->sizer->setImage($this);
         return $this;
     }
 

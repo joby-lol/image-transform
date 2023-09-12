@@ -5,20 +5,25 @@ namespace ByJoby\ImageTransform\Drivers;
 use ByJoby\ImageTransform\DriverInterface;
 use ByJoby\ImageTransform\Image;
 use ByJoby\ImageTransform\Sizers\AbstractSizer;
+use Exception;
 
 abstract class AbstractDriver implements DriverInterface
 {
+    /** @var string|null */
     protected $tempDir = null;
+    /** @var int */
     protected $chmod_dir = 0775;
+    /** @var int */
     protected $chmod_file = 0665;
 
-    abstract protected function doSave(Image $image, string $filename);
+    abstract protected function doSave(Image $image, string $filename): void;
 
     public function tempDir(): string
     {
         if (!$this->tempDir) {
             $this->setTempDir(sys_get_temp_dir() . '/byjoby_image-transform/' . uniqid("", true));
         }
+        // @phpstan-ignore-next-line this is actually checked
         return $this->tempDir;
     }
 
@@ -31,7 +36,7 @@ abstract class AbstractDriver implements DriverInterface
         return $this;
     }
 
-    protected function mkdir(string $dir)
+    protected function mkdir(string $dir): bool
     {
         // return true if dir exists and is writeable
         if (is_dir($dir) && is_writeable($dir)) {
@@ -74,12 +79,15 @@ abstract class AbstractDriver implements DriverInterface
                 }
                 touch($filename);
             }
-            $this->doSave($image, realpath($filename));
+            $filename = realpath($filename);
+            if (!$filename) throw new Exception("Invalid filename or path");
+            $this->doSave($image, $filename);
             chmod($filename, $this->chmod_file);
             return null;
         } else {
             $filename = $this->tempDir() . '/' . uniqid() . '.jpg';
             $this->doSave($image, $filename);
+            /** @var string we can count on this being a string because we just wrote it */
             $output = file_get_contents($filename);
             unlink($filename);
             return $output;

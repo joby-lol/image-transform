@@ -10,7 +10,8 @@ use ByJoby\ImageTransform\Drivers\GDDriver;
  */
 class DefaultDriver
 {
-    protected $driver;
+    /** @var DriverInterface|null */
+    protected static $driver;
 
     public static function get(): DriverInterface
     {
